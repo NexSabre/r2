@@ -16,7 +16,7 @@ setuptools.setup(
     version=version_number,
     author="Nex Sabre",
     author_email="nexsabre@protonmail.com",
-    description="",
+    description="Software 'r2' is designed to record and play responses (to mock) from REST API services",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/NexSabre/r2",
