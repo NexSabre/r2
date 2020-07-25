@@ -7,7 +7,7 @@ from typing import Union, Any
 
 import requests
 import urllib3
-from flask import Flask, request, abort, jsonify
+from flask import Flask, request, abort, jsonify, Response
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
 
 from actions.core.package import Package
@@ -53,7 +53,10 @@ class FlaskServer:
     @staticmethod
     def load_content(endpoint):
         package = Package(Configuration.read()["package_name"])
-        return package.load(endpoint)
+        if not package.load(endpoint):
+            return Response(status=404)
+        else:
+            return package
 
     @staticmethod
     @app.route('/favicon.ico')

@@ -37,7 +37,9 @@ class Package:
     def load(self, endpoint):
         path, file = self._undress_endpoint(endpoint)
         path_exist, path_absolute = self._ensure_path_exists(os.path.join(*(self._package_path, path)))
-        if not os.path.exists(os.path.join(path_absolute, file)):
+        if not os.path.exists(path_absolute):
+            return None
+        if not os.path.isfile(os.path.join(path_absolute, file)):
             return None
 
         with open(os.path.join(path_absolute, file), 'r') as stored_response:
