@@ -18,5 +18,6 @@ class RecordAction(Action):
         target = configuration.target[0]
         package = configuration.package
 
-        Configuration(TARGET=target, PACKAGE_NAME=package).save()
-        FlaskServer(target=target, package=package, save=configuration.save, overwrite=configuration.overwrite).serve()
+        Configuration(TARGET=target, PACKAGE_NAME=package, MODE=1).save()
+        FlaskServer(target=target, package=package, save=configuration.save, overwrite=configuration.overwrite,
+                    mode=0).serve()

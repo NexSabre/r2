@@ -10,11 +10,13 @@ from install import Installation
 class Configuration:
     TARGET: str = None
     PACKAGE_NAME: str = None
+    MODE: int = None
 
     def _config_dict(self):
         return {
             "target": self.TARGET,
-            "package_name": self.PACKAGE_NAME
+            "package_name": self.PACKAGE_NAME,
+            "mode": self.MODE
         }
 
     @staticmethod

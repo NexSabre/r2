@@ -21,15 +21,18 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 class FlaskServer:
     app = Flask(__name__)
 
-    def __init__(self, target: str, package: str = 'default', save: bool = True, overwrite: bool = False):
+    def __init__(self, target: str = None, package: str = 'default', save: bool = True, overwrite: bool = False,
+                 mode: int = 1):
         if not target:
-            print("Target is empty")
-            raise
+            logging.info("Working in REPLAY MODE")
+        else:
+            logging.info("Working in RECORD MODE")
 
         self.target = target
         self.package = package
         self.save = save
         self.overwrite = overwrite
+        self.mode = mode
 
         self._download_dir = abspath(Installation.DOWNLOAD_DIR)
         self.abs_package_path = join(self._download_dir, package)
@@ -46,6 +49,11 @@ class FlaskServer:
     def dump_content(endpoint, response_body):
         package = Package(Configuration.read()["package_name"], True)
         package.save(endpoint, response_body)
+
+    @staticmethod
+    def load_content(endpoint):
+        package = Package(Configuration.read()["package_name"])
+        return package.load(endpoint)
 
     @staticmethod
     @app.route('/favicon.ico')
@@ -71,11 +79,28 @@ class FlaskServer:
     @staticmethod
     def release_traffic(path, method, payload, headers) -> Union[bytes, Any]:
         target = Configuration().read()["target"]
+        mode = Configuration().read()["mode"]
 
         endpoint = f'{target}/{path}'
         if request.query_string:
             endpoint = f'{endpoint}?{request.query_string.decode("utf-8")}'
 
+        # record mode == 0
+        if mode == 0:
+            return FlaskServer._record_mode(payload, method, endpoint, path, headers)
+        elif mode == 1:
+            return FlaskServer._replay_mode(path)
+        else:
+            raise NotImplementedError
+
+    @staticmethod
+    def _replay_mode(path):
+        stored_target_response = FlaskServer.load_content(path)
+        logging.info(f"Found stored response for path {path}")
+        return stored_target_response
+
+    @staticmethod
+    def _record_mode(payload, method, endpoint, path, headers):
         # kwargs = {'verify': False,
         #           'headers': headers}
         kwargs = {'verify': False}
@@ -94,12 +119,14 @@ class FlaskServer:
         status_code, response_body, headers = response.status_code, response.content.decode("utf-8"), response.headers
         logging.info(endpoint)
         try:
-            json_response_body = json.loads(response_body)
-            FlaskServer.dump_content(path, json_response_body)
-            return json_response_body
+            target_response = json.loads(response_body)
+            FlaskServer.dump_content(path, target_response)
+
+            logging.info(f"Received a response from the target for the path {path}")
+            return target_response
         except JSONDecodeError:
             logging.error("JSON response is corrupted")
-            print(jsonify({"error": "JSON response is corrupted"}))
+            return jsonify({"r2error": "JSON response is corrupted"})
 
 
 if __name__ == "__main__":

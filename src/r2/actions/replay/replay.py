@@ -1,4 +1,6 @@
 from actions.action import Action
+from actions.core.flask_server import FlaskServer
+from configuration import Configuration
 
 
 class ReplayAction(Action):
@@ -6,7 +8,10 @@ class ReplayAction(Action):
     PARAM_NAME = "ACTION"
 
     def fill_parser_arguments(self):
-        self.parser.add_argument("replay_filename", help="Filename of the replay", type=str, nargs=1)
+        self.parser.add_argument("--package", help="Package name for the replay", type=str, nargs=1, default='default')
 
     def process_action(self, configuration):
-        pass
+        package = configuration.package
+
+        Configuration(PACKAGE_NAME=package, MODE=1).save()
+        FlaskServer(package=package, mode=1).serve()

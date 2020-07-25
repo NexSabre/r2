@@ -1,4 +1,5 @@
 import json
+import logging
 import os
 from typing import AnyStr
 
@@ -33,13 +34,27 @@ class Package:
                 print(err)
                 pass
 
-    def load(self, endpoint, response_body):
-        pass
+    def load(self, endpoint):
+        path, file = self._undress_endpoint(endpoint)
+        path_exist, path_absolute = self._ensure_path_exists(os.path.join(*(self._package_path, path)))
+        if not os.path.exists(os.path.join(path_absolute, file)):
+            return None
+
+        with open(os.path.join(path_absolute, file), 'r') as stored_response:
+            json_response = None
+            raw_response = stored_response.read()
+            try:
+                json_response = json.loads(raw_response)
+            except Exception as err:
+                logging.error(f"Can not convert raw_response into json format. Is file corrupted?\n{err}")
+            finally:
+                return json_response
 
     def _ensure_path_exists(self, path: str):
         if os.path.exists(path):
-            return
+            return True, path
         os.makedirs(os.path.join(self._package_path, path), exist_ok=True)
+        return os.path.exists(path), path
 
     @staticmethod
     def _undress_endpoint(endpoint: str) -> (str, str):
