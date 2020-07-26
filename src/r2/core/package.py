@@ -20,7 +20,7 @@ class Package:
         os.makedirs(abs_package_dir)
         return os.path.exists(abs_package_dir), abs_package_dir
 
-    def save(self, endpoint, response_body):
+    def save(self, endpoint, response_body) -> bool:
         path, file = self._undress_endpoint(endpoint)
         self._ensure_path_exists(os.path.join(*(self._package_path, path)))
 
@@ -32,7 +32,8 @@ class Package:
                     new_json.write(response_body)
             except Exception as err:
                 print(err)
-                pass
+                return False
+            return True
 
     def load(self, endpoint):
         path, file = self._undress_endpoint(endpoint)
@@ -42,15 +43,24 @@ class Package:
         if not os.path.isfile(os.path.join(path_absolute, file)):
             return None
 
-        with open(os.path.join(path_absolute, file), 'r') as stored_response:
-            json_response = None
-            raw_response = stored_response.read()
-            try:
-                json_response = json.loads(raw_response)
-            except Exception as err:
-                logging.error(f"Can not convert raw_response into json format. Is file corrupted?\n{err}")
-            finally:
-                return json_response
+        json_response = None
+        raw_response = self.__read(os.path.join(path_absolute, file))
+        try:
+            json_response = json.loads(raw_response)
+        except Exception as err:
+            logging.error(f"Can not convert raw_response into json format. Is file corrupted?\n{err}")
+        finally:
+            return json_response
+
+    @staticmethod
+    def __read(location):
+        with open(location, 'r') as stored_response:
+            return stored_response.read()
+
+    @staticmethod
+    def __save(location, content):
+        with open(location, 'w') as filestore:
+            filestore.write(content)
 
     def _ensure_path_exists(self, path: str):
         if os.path.exists(path):
