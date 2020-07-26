@@ -1,6 +1,6 @@
-from actions.action import Action
-from actions.core.flask_server import FlaskServer
-from configuration import Configuration
+from r2.actions.action import Action
+from r2.configuration import Configuration
+from r2.core.flask_server import FlaskServer
 
 
 class ReplayAction(Action):

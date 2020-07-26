@@ -1,7 +1,7 @@
 from argparse import ArgumentParser
 
-from actions.record.record import RecordAction
-from actions.replay.replay import ReplayAction
+from r2.actions.record.record import RecordAction
+from r2.actions.replay.replay import ReplayAction
 
 
 class ActionsDispatcher:

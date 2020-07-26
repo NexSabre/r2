@@ -10,9 +10,9 @@ import urllib3
 from flask import Flask, request, abort, jsonify, Response
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
 
-from actions.core.package import Package
-from configuration import Configuration
-from install import Installation
+from r2.configuration import Configuration
+from r2.core.package import Package
+from r2.install import Installation
 
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)

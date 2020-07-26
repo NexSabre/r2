@@ -3,7 +3,7 @@ import logging
 import os
 from typing import AnyStr
 
-from install import Installation
+from r2.install import Installation
 
 
 class Package:

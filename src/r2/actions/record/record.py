@@ -1,6 +1,6 @@
-from actions.action import Action
-from actions.core.flask_server import FlaskServer
-from configuration import Configuration
+from r2.actions.action import Action
+from r2.configuration import Configuration
+from r2.core.flask_server import FlaskServer
 
 
 class RecordAction(Action):
@@ -18,6 +18,6 @@ class RecordAction(Action):
         target = configuration.target[0]
         package = configuration.package
 
-        Configuration(TARGET=target, PACKAGE_NAME=package, MODE=1).save()
+        Configuration(TARGET=target, PACKAGE_NAME=package, MODE=0).save()
         FlaskServer(target=target, package=package, save=configuration.save, overwrite=configuration.overwrite,
                     mode=0).serve()

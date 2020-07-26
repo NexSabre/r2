@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from os.path import join
 from typing import Dict
 
-from install import Installation
+from r2.install import Installation
 
 
 @dataclass
