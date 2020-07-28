@@ -1,13 +1,48 @@
-# r2
-Request-Replay is simple tool to record your requests on specific target and later replay it to automate your daily tasks
+# r2 (Request2Replay)
+Request2Replay is simple tool to record your requests on specific target and later replay it to automate your daily tasks
 
-This version is still Work In Progress. Record/Replay function should work with no problems, but it is lack of features. 
+__Note:__ This version is still Work In Progress. Record/Replay function should work with no problems, but it is lack of features. 
+
+## TLDR;
+```
+# install
+pip install r2
+
+# record responses from another service
+r2 record http://api.plos.org
+```
+
+Go to your browser and type: 
+
+`localhost:5000/search?q=title:DNA`
+
+in your home directory, all response will be saved at
+ 
+`~/.r2/download/default/*`
+
+```
+# to replay packages 
+r2 replay
+```
+
+__Note:__ Actual, `r2` support only a one packages at download directory. More will be added soon. 
 
 ## TODO
 __Note:__ This is partly implemented with 0.2 version.
 
 - Implement an option to parse arguments ex `http://127.0.0.1:5000/search?q=title:DNA`. Actual version will pass 
 everything on the right side of the `?` and save a file under `search`.
+
+- Add a support for more than one package
+
+## Installation
+You can install a `r2` software using a python package manager or build it from source code:
+
+### from pip
+`r2` is available thru `pip`, to install type `pip install r2`
+
+### from source
+Go into `src` directory of source, and type `python setup.py sdist bdist_wheel && cd dist && pip install r2*.whl` 
 
 
 ## Replay files
