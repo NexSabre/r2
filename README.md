@@ -1,5 +1,5 @@
-# r2 (Request2Replay)
-Request2Replay is simple tool to record your requests on specific target and later replay it to automate your daily tasks
+# r2 (Record2Replay)
+Record2Replay is simple tool to record your requests on specific target and later replay it to automate your daily tasks
 
 __Note:__ This version is still Work In Progress. Record/Replay function should work with no problems, but it is lack of features. 
 
