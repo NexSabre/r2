@@ -1,2 +1,6 @@
+# 0.2
+- Add a support for the url arguments. This improvement will change the format of the response's file. More information
+you find at README
+
 # 0.1
 - Initial release (record and replay function should work - arguments on url does not work)
