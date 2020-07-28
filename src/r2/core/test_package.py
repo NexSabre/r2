@@ -9,7 +9,6 @@ class TestPackage(TestCase):
         self.package = Package()
 
     def test_save(self):
-        # self.package.save = MagicMock(return_value=False)
         self.assertTrue(self.package.save("test/endpoint", {"test": "test_body"}))
 
     def test_load(self):
