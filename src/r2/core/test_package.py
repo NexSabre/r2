@@ -29,6 +29,12 @@ class TestPackage(TestCase):
         self.package.save(ENDPOINT_W_ARGS, TEST_RESPONSE)
         self.assertIsNotNone(self.package.load(ENDPOINT_W_ARGS))
 
+    def test_get_all_actions(self):
+        self.package.save(ENDPOINT_W_ARG, TEST_RESPONSE)
+        self.package.save(ENDPOINT_W_ARGS, TEST_RESPONSE)
+        actions = self.package.get_all_actions(ENDPOINT)
+        self.assertIs(len(actions), 2, "Should add a two actions for this endpoint")
+
     def test__make_args_dict_from_endpoint(self):
         args = self.package._make_args_dict_from_endpoint(ENDPOINT_W_ARGS)
 
@@ -37,6 +43,7 @@ class TestPackage(TestCase):
 
     def test__undress_endpoint(self):
         path, filename, args = self.package._undress_endpoint(ENDPOINT_W_ARGS)
+
         self.assertIsNotNone(path)
         self.assertEqual(filename, "endpoint")
         self.assertTrue(isinstance(args, dict))

@@ -66,23 +66,25 @@ class Package:
         return existing_file
 
     def load(self, endpoint):
-        path, file, args = self._undress_endpoint(endpoint)
+        _, _, args = self._undress_endpoint(endpoint)
+        proper_response_base_on_args = [x for x in self.get_all_actions(endpoint) if args == x["arguments"]]
+        return proper_response_base_on_args[0]["response"] if proper_response_base_on_args else None
+
+    def get_all_actions(self, endpoint):
+        path, file, _ = self._undress_endpoint(endpoint)
         path_exist, path_absolute = self._ensure_path_exists(os.path.join(*(self._package_path, path)))
         if not os.path.exists(path_absolute):
             return None
         if not os.path.isfile(os.path.join(path_absolute, file)):
             return None
 
-        #  validate a arguments
         json_response = None
         raw_response = self.__read(os.path.join(path_absolute, file))
         try:
             json_response = json.loads(raw_response)
         except Exception as err:
             logging.error(f"Can not convert raw_response into json format. Is file corrupted?\n{err}")
-
-        proper_response_base_on_args = [x for x in json_response["actions"] if args == x["arguments"]]
-        return proper_response_base_on_args[0]["response"] if proper_response_base_on_args else None
+        return json_response["actions"]
 
     @staticmethod
     def __read(location):
