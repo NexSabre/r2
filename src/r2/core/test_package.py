@@ -9,6 +9,7 @@ ENDPOINT_W_ARG = "test/endpoint?first=asdfgh"
 ENDPOINT_W_ARGS = "test/endpoint?first=asdfgh&second=qwerty"
 
 TEST_RESPONSE = {"test": "test_body"}
+TEST_RESPONSE_AS_LIST = [10, 20]
 
 
 class TestPackage(TestCase):
@@ -28,6 +29,17 @@ class TestPackage(TestCase):
     def test_load_arg_endpoint(self):
         self.package.save(ENDPOINT_W_ARGS, TEST_RESPONSE)
         self.assertIsNotNone(self.package.load(ENDPOINT_W_ARGS))
+
+    def test_save_list_endpoint(self):
+        self.assertTrue(self.package.save(ENDPOINT, TEST_RESPONSE_AS_LIST))
+
+    def test_load_list_endpoint(self):
+        self.package.save(ENDPOINT, TEST_RESPONSE_AS_LIST)
+        response = self.package.load(ENDPOINT)
+        awaited_response = [10, 20]
+
+        self.assertTrue(response.get("r2_raw_content", False))
+        self.assertListEqual(response["r2_raw_content"], awaited_response)
 
     def test_get_all_actions(self):
         self.package.save(ENDPOINT_W_ARG, TEST_RESPONSE)

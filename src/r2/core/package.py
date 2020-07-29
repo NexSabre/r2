@@ -68,7 +68,20 @@ class Package:
     def load(self, endpoint):
         _, _, args = self._undress_endpoint(endpoint)
         proper_response_base_on_args = [x for x in self.get_all_actions(endpoint) if args == x["arguments"]]
-        return proper_response_base_on_args[0]["response"] if proper_response_base_on_args else None
+
+        load_response = proper_response_base_on_args[0]["response"] if proper_response_base_on_args else None
+
+        # if isinstance(load_response)
+        try:
+            if isinstance(load_response, dict):
+                return load_response
+            load_response = json.loads(load_response)
+        except TypeError as e:
+            load_response = {
+                "r2_error": f'{e}',
+                "r2_raw_content": load_response
+            }
+        return load_response
 
     def get_all_actions(self, endpoint):
         path, file, _ = self._undress_endpoint(endpoint)

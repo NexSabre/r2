@@ -53,10 +53,13 @@ class FlaskServer:
     @staticmethod
     def load_content(endpoint):
         package = Package(Configuration.read()["package_name"])
-        if not package.load(endpoint):
+        package_load = package.load(endpoint)
+        if not package_load:
             return Response(status=404)
-        else:
-            return package
+        package_load = [10, 20]
+        if isinstance(package_load, list):
+            return Response(response=json.dumps(package_load), status=200, mimetype='application/json')
+        return jsonify(package_load)
 
     @staticmethod
     @app.route('/favicon.ico')
@@ -100,6 +103,16 @@ class FlaskServer:
     def _replay_mode(path):
         stored_target_response = FlaskServer.load_content(path)
         logging.info(f"Found stored response for path {path}")
+
+        if isinstance(stored_target_response, list):
+            try:
+                return Response(response=json.dumps(stored_target_response),
+                                status=200,
+                                mimetype='application/json')
+            except:
+                return Response(response=stored_target_response,
+                                status=200,
+                                mimetype='application/json')
         return stored_target_response
 
     @staticmethod
@@ -124,12 +137,26 @@ class FlaskServer:
         try:
             target_response = json.loads(response_body)
             FlaskServer.dump_content(path, target_response)
+        except JSONDecodeError as e:
+            logging.error("JSON response is corrupted. Sending raw response")
+            error_response = {
+                "r2_error": f'{e}',
+                "r2_raw_content": response_body
+            }
+            return jsonify(error_response)
+        logging.info(f"Received a response from the target for the path {path}")
 
-            logging.info(f"Received a response from the target for the path {path}")
-            return target_response
-        except JSONDecodeError:
-            logging.error("JSON response is corrupted")
-            return jsonify({"r2error": "JSON response is corrupted"})
+        if isinstance(target_response, list):
+            try:
+                return Response(response=json.dumps(target_response),
+                                status=200,
+                                mimetype='application/json')
+            except:
+                return Response(response=response_body,
+                                status=200,
+                                mimetype='application/json')
+
+        return target_response
 
 
 if __name__ == "__main__":
