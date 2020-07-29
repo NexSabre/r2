@@ -1,4 +1,4 @@
-# 0.2.1
+# 0.3
 - Add error information to the response, when the content is not a json serializable
 
 # 0.2
