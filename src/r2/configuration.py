@@ -1,4 +1,5 @@
 import json
+import os
 from dataclasses import dataclass
 from os.path import join
 from typing import Dict
@@ -26,6 +27,8 @@ class Configuration:
 
     @staticmethod
     def write(config_dict: Dict):
+        if not os.path.exists(Installation.HOME_DIR):
+            os.mkdir(Installation.HOME_DIR)
         with open(Configuration.__config_path(), 'w') as config_file:
             config_file.write(json.dumps(config_dict))
 
