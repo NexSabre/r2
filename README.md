@@ -10,6 +10,10 @@ pip install r2
 
 # record responses from another service
 r2 record http://api.plos.org
+
+# or record on the custom name 'api_plos'
+r2 record http://api.plos.org --package api_plos
+
 ```
 
 Go to your browser and type: 
@@ -18,14 +22,15 @@ Go to your browser and type:
 
 in your home directory, all response will be saved at
  
-`~/.r2/download/default/*`
+`~/.r2/packages/default/*`
 
 ```
 # to replay packages 
 r2 replay
-```
 
-__Note:__ Actual, `r2` support only a one packages at download directory. More will be added soon. 
+# or to replay a custom package 'api_plos'
+r2 replay --package api_plos
+```
 
 ## TODO
 __Note:__ This is partly implemented with 0.2 version.
