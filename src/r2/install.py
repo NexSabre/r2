@@ -1,5 +1,5 @@
 import logging
-from os import makedirs
+from os import makedirs, mkdir
 from os.path import expanduser, join, exists
 
 
@@ -20,6 +20,13 @@ class Installation:
             if not exists(d):
                 logging.error(f"Can not create a {d} directory")
                 raise
+
+    @staticmethod
+    def create_home():
+        try:
+            mkdir(Installation.HOME_DIR)
+        except Exception:
+            logging.error(f"Home directory cannot be created {Installation.HOME_DIR}")
 
     @property
     def download_path(self):
