@@ -8,7 +8,7 @@ class ReplayAction(Action):
     PARAM_NAME = "ACTION"
 
     def fill_parser_arguments(self):
-        self.parser.add_argument("--package", help="Package name for the replay", type=str, nargs=1, default='default')
+        self.parser.add_argument("--package", help="Package name for the replay", type=str, default='default')
 
     def process_action(self, configuration):
         package = configuration.package

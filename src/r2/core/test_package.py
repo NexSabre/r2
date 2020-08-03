@@ -61,8 +61,8 @@ class TestPackage(TestCase):
         self.assertTrue(isinstance(args, dict))
 
     def tearDown(self) -> None:
-        test_endpoint_location = os.path.join(*(Installation.DOWNLOAD_DIR, "default", "test", "endpoint"))
+        test_endpoint_location = os.path.join(*(Installation.PACKAGES_DIR, "default", "test", "endpoint"))
         if os.path.exists(test_endpoint_location):
             os.remove(test_endpoint_location)
-        if os.path.isdir(os.path.join(*(Installation.DOWNLOAD_DIR, "default", "test"))):
-            os.rmdir(os.path.join(*(Installation.DOWNLOAD_DIR, "default", "test")))
+        if os.path.isdir(os.path.join(*(Installation.PACKAGES_DIR, "default", "test"))):
+            os.rmdir(os.path.join(*(Installation.PACKAGES_DIR, "default", "test")))
