@@ -14,7 +14,7 @@ class Package:
         self._package_path = self._create_package_directory()[1]
 
     def _create_package_directory(self) -> (bool, AnyStr):
-        abs_package_dir = os.path.join(Installation.DOWNLOAD_DIR, self._package_name)
+        abs_package_dir = os.path.join(Installation.PACKAGES_DIR, self._package_name)
         if os.path.exists(abs_package_dir):
             return True, abs_package_dir
         os.makedirs(abs_package_dir)
@@ -71,11 +71,14 @@ class Package:
 
         load_response = proper_response_base_on_args[0]["response"] if proper_response_base_on_args else None
 
-        # if isinstance(load_response)
         try:
             if isinstance(load_response, dict):
                 return load_response
-            load_response = json.loads(load_response)
+
+            if load_response is not None:
+                load_response = json.loads(load_response)
+            else:
+                raise
         except TypeError as e:
             load_response = {
                 "r2_error": f'{e}',
@@ -106,8 +109,8 @@ class Package:
 
     @staticmethod
     def __save(location, content):
-        with open(location, 'w') as filestore:
-            filestore.write(content)
+        with open(location, 'w') as file_store:
+            file_store.write(content)
 
     def _ensure_path_exists(self, path: str):
         if os.path.exists(path):
