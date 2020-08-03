@@ -34,8 +34,8 @@ class FlaskServer:
         self.overwrite = overwrite
         self.mode = mode
 
-        self._download_dir = abspath(Installation.DOWNLOAD_DIR)
-        self.abs_package_path = join(self._download_dir, package)
+        self._packages_dir = abspath(Installation.PACKAGES_DIR)
+        self.abs_package_path = join(self._packages_dir, package)
         if not exists(self.abs_package_path):
             makedirs(self.abs_package_path, exist_ok=True)
 
