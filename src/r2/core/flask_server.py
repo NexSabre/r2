@@ -12,6 +12,7 @@ from requests.packages.urllib3.exceptions import InsecureRequestWarning
 
 from r2.configuration import Configuration
 from r2.core.package import Package
+from r2.helpers.server_mode import ServerMode
 from r2.install import Installation
 
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
@@ -85,16 +86,15 @@ class FlaskServer:
     @staticmethod
     def release_traffic(path, method, payload, headers) -> Union[bytes, Any]:
         target = Configuration().read()["target"]
-        mode = Configuration().read()["mode"]
+        mode = ServerMode(Configuration().read()["mode"])
 
         endpoint = f'{target}/{path}'
         if request.query_string:
             endpoint = f'{endpoint}?{request.query_string.decode("utf-8")}'
 
-        # record mode == 0
-        if mode == 0:
+        if mode == ServerMode.Record:
             return FlaskServer._record_mode(payload, method, endpoint, path, headers)
-        elif mode == 1:
+        elif mode == ServerMode.Replay:
             return FlaskServer._replay_mode(path)
         else:
             raise NotImplementedError
@@ -105,11 +105,12 @@ class FlaskServer:
         logging.info(f"Found stored response for path {path}")
 
         if isinstance(stored_target_response, list):
+            # noinspection PyBroadException
             try:
                 return Response(response=json.dumps(stored_target_response),
                                 status=200,
                                 mimetype='application/json')
-            except:
+            except Exception:
                 return Response(response=stored_target_response,
                                 status=200,
                                 mimetype='application/json')
@@ -117,9 +118,8 @@ class FlaskServer:
 
     @staticmethod
     def _record_mode(payload, method, endpoint, path, headers):
-        # kwargs = {'verify': False,
-        #           'headers': headers}
-        kwargs = {'verify': False}
+        kwargs = {'verify': False,
+                  'headers': headers}
         if payload:
             if headers['Content-Type'] == "application/json":
                 kwargs['data'] = json.dumps(payload)

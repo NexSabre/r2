@@ -35,12 +35,11 @@ class Package:
             "response": None
         }
 
-        template = None
+        template = outer_template
         if os.path.isfile(response_path):
             existing_file = self._load_existing_file(response_path)
             template = existing_file if existing_file.get("data_id", False) else outer_template
-        else:
-            template = outer_template
+
         known_arguments = [x for x in template["actions"] if args != x["arguments"]]
 
         inner_template["arguments"], inner_template["response"] = args, response_body
