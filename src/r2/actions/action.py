@@ -1,5 +1,9 @@
 import argparse
+import logging
 from abc import abstractmethod
+from datetime import datetime
+
+from r2.install import Installation
 
 
 class Action:
@@ -19,5 +23,13 @@ class Action:
     def process_action(self, configuration):
         pass
 
-    def get_config(self):
-        self.parser.parse_args()
+    def start_logging(self):
+        def replace_all(text):
+            for x in (":", ".", "-"):
+                text = text.replace(x, '_')
+            return text
+
+        log_filename = f"{Installation.LOGS_DIR}/r2_{self.ACTION}_{replace_all(datetime.now().isoformat())}"
+        logging.basicConfig(filename=log_filename, level=logging.NOTSET)
+        logging.getLogger().addHandler(logging.StreamHandler())
+        logging.info(f"r2 logs will be stored at {Installation.LOGS_DIR} as {log_filename}")
