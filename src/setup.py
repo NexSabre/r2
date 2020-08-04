@@ -22,9 +22,19 @@ setuptools.setup(
     url="https://github.com/NexSabre/r2",
     packages=setuptools.find_packages(),
     classifiers=[
-        "Programming Language :: Python :: 3",
-        "License :: OSI Approved :: MIT License",
+        "Intended Audience :: Developers"
+        "License :: OSI Approved :: MIT License"
+        "Natural Language :: English"
         "Operating System :: OS Independent",
+        "Operating System :: MacOS :: MacOS X"
+        "Operating System :: POSIX :: Linux"
+        "Operating System :: Microsoft :: Windows"
+        "Programming Language :: Python"
+        "Programming Language :: Python :: 3"
+        "Programming Language :: Python :: 3 :: Only"
+        "Programming Language :: Python :: 3.6"
+        "Programming Language :: Python :: 3.7"
+        "Programming Language :: Python :: 3.8"
     ],
     python_requires='>=3.6',
     install_requires=requirements,
