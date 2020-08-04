@@ -18,6 +18,8 @@ class RecordAction(Action):
         target = configuration.target
         package = configuration.package
 
+        self.start_logging()
+
         Configuration(TARGET=target, PACKAGE_NAME=package, MODE=0).save()
         FlaskServer(target=target, package=package, save=configuration.save, overwrite=configuration.overwrite,
                     mode=0).serve()

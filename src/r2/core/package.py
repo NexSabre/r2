@@ -40,6 +40,7 @@ class Package:
             existing_file = self._load_existing_file(response_path)
             template = existing_file if existing_file.get("data_id", False) else outer_template
 
+        # noinspection PyTypeChecker
         known_arguments = [x for x in template["actions"] if args != x["arguments"]]
 
         inner_template["arguments"], inner_template["response"] = args, response_body
@@ -52,7 +53,7 @@ class Package:
                 if isinstance(template, dict):
                     new_json.write(json.dumps(template))
                 else:
-                    new_json.write(template)
+                    new_json.write(str(template))
             except Exception as err:
                 print(err)
                 return False
