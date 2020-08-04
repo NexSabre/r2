@@ -1,8 +1,6 @@
 import json
 import logging
 from json.decoder import JSONDecodeError
-from os import makedirs
-from os.path import join, exists, abspath
 from typing import Union, Any
 
 import requests
@@ -35,10 +33,7 @@ class FlaskServer:
         self.overwrite = overwrite
         self.mode = mode
 
-        self._packages_dir = abspath(Installation.PACKAGES_DIR)
-        self.abs_package_path = join(self._packages_dir, package)
-        if not exists(self.abs_package_path):
-            makedirs(self.abs_package_path, exist_ok=True)
+        Installation.package_directory_creation(package)
 
     def __call__(self):
         self.app.run()
@@ -70,7 +65,7 @@ class FlaskServer:
     @staticmethod
     @app.route('/', defaults={'path': ''}, methods=["GET", "POST", "PATCH", "DELETE"], strict_slashes=False)
     @app.route('/<path:path>', methods=["GET", "POST", "PATCH", "DELETE"], strict_slashes=False)
-    def catch_traffic(path):
+    def _catch_traffic(path):
         headers = request.headers
         request_data = request.get_data().decode("utf-8")
         payload = None
@@ -81,10 +76,10 @@ class FlaskServer:
                 print(err)
                 payload = {}
 
-        return FlaskServer.release_traffic(path, "GET", payload, headers)
+        return FlaskServer._release_traffic(path, "GET", payload, headers)
 
     @staticmethod
-    def release_traffic(path, method, payload, headers) -> Union[bytes, Any]:
+    def _release_traffic(path, method, payload, headers) -> Union[bytes, Any]:
         target = Configuration().read()["target"]
         mode = ServerMode(Configuration().read()["mode"])
 
@@ -101,6 +96,8 @@ class FlaskServer:
 
     @staticmethod
     def _replay_mode(path):
+        logging.debug("Replay mode")
+
         stored_target_response = FlaskServer.load_content(path)
         logging.info(f"Found stored response for path {path}")
 
@@ -118,6 +115,8 @@ class FlaskServer:
 
     @staticmethod
     def _record_mode(payload, method, endpoint, path, headers):
+        logging.debug("Record mode")
+
         kwargs = {'verify': False,
                   'headers': headers}
         if payload:
@@ -147,11 +146,12 @@ class FlaskServer:
         logging.info(f"Received a response from the target for the path {path}")
 
         if isinstance(target_response, list):
+            # noinspection PyBroadException
             try:
                 return Response(response=json.dumps(target_response),
                                 status=200,
                                 mimetype='application/json')
-            except:
+            except Exception:
                 return Response(response=response_body,
                                 status=200,
                                 mimetype='application/json')

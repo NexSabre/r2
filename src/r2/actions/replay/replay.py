@@ -13,5 +13,7 @@ class ReplayAction(Action):
     def process_action(self, configuration):
         package = configuration.package
 
+        self.start_logging()
+
         Configuration(PACKAGE_NAME=package, MODE=1).save()
         FlaskServer(package=package, mode=1).serve()

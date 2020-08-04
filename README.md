@@ -61,6 +61,11 @@ Future upgrade:
 - additional status codes
 - additional information from headers
 
+## Logs files 
+All logs are stored at `~/.r2/logs` directory with filenames `r2_record_2020_08_04T18_06_02_050068` 
+where (`r2_[action_type]_[isoformat_time]`).
+
+
 ### Format change v0.1 to v0.2
 Since version v0.2, `r2` presents a new format to store response information from the services. 
 Before v0.2 all response was stored as a raw text in the file. Now, the Response is packed: 

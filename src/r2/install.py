@@ -1,6 +1,6 @@
 import logging
-from os import makedirs, mkdir
-from os.path import expanduser, join, exists
+from os import makedirs
+from os.path import expanduser, join, exists, abspath
 
 
 class Installation:
@@ -23,21 +23,8 @@ class Installation:
                 raise
 
     @staticmethod
-    def create_home():
-        # noinspection PyBroadException
-        try:
-            mkdir(Installation.HOME_DIR)
-        except Exception:
-            logging.error(f"Home directory cannot be created {Installation.HOME_DIR}")
-
-    @staticmethod
-    def create_logs_dir():
-        # noinspection PyBroadException
-        try:
-            mkdir(Installation.LOGS_DIR)
-        except Exception:
-            logging.error(f"Log directory cannot be created {Installation.LOGS_DIR}")
-
-    @property
-    def packages_path(self):
-        return self.PACKAGES_DIR
+    def package_directory_creation(package):
+        _packages_dir = abspath(Installation.PACKAGES_DIR)
+        abs_package_path = join(_packages_dir, package)
+        if not exists(abs_package_path):
+            makedirs(abs_package_path, exist_ok=True)
