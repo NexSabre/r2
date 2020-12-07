@@ -1,3 +1,5 @@
+[![PyPI version](https://badge.fury.io/py/r2.svg)](https://badge.fury.io/py/r2)
+
 # r2 (Record2Replay)
 Record2Replay is simple tool to record your requests on specific target and later replay it to automate your daily tasks
 
