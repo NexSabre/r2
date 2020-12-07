@@ -1,3 +1,4 @@
+![Test](https://github.com/NexSabre/r2/workflows/Test/badge.svg)
 [![PyPI version](https://badge.fury.io/py/r2.svg)](https://badge.fury.io/py/r2)
 
 # r2 (Record2Replay)
